@@ -1,0 +1,94 @@
+syntax = "proto3";
+
+package payments;
+
+service UserService {
+  rpc GetAutomaticSubscriptions(GetUserIdRequest) returns (AutomaticSubscriptionsResponse);
+  rpc GetUserPaymentHistory(GetUserIdRequest) returns (PaymentHistoryResponse);
+  rpc GetPaymentReceipt(GetPaymentReceiptRequest) returns (PaymentReceiptResponse);
+  rpc UnsubscribeAutomaticPayment(UnsubscribeRequest) returns (UnsubscribeResponse);
+}
+
+service ServiceService {
+  rpc GetServices(Empty) returns (ServicesListResponse);
+  rpc GetService(GetServiceRequest) returns (ServiceResponse);
+  rpc PayService(PayServiceRequest) returns (PayServiceResponse);
+  rpc SubscribeToAutomaticPayment(SubscribeRequest) returns (SubscribeResponse);
+}
+
+message GetUserIdRequest {
+  int32 user_id = 1;
+}
+
+message GetPaymentReceiptRequest {
+  int32 user_id = 1;
+  int32 payment_id = 2;
+}
+
+message Empty {}
+
+message AutomaticSubscriptionsResponse {
+  repeated int32 automatics = 1;
+}
+
+message PaymentHistoryResponse {
+  repeated Payment payments = 1;
+}
+
+message PaymentReceiptResponse {
+  int32 id = 1;
+  string service = 2;
+  int32 amount = 3;
+}
+
+message UnsubscribeRequest {
+  int32 user_id = 1;
+  int32 aut_id = 2;
+}
+
+message UnsubscribeResponse {
+  string message = 1;
+  repeated int32 automatics = 2;
+}
+
+message GetServiceRequest {
+  int32 service_id = 1;
+}
+
+message ServiceResponse {
+  int32 id = 1;
+  string name = 2;
+}
+
+message ServicesListResponse {
+  repeated Service services = 1;
+}
+
+message PayServiceRequest {
+  int32 service_id = 1;
+  int32 user_id = 2;
+}
+
+message PayServiceResponse {
+  string message = 1;
+}
+
+message SubscribeRequest {
+  int32 service_id = 1;
+  int32 user_id = 2;
+}
+
+message SubscribeResponse {
+  string message = 1;
+}
+
+message Payment {
+  int32 id = 1;
+  string service = 2;
+  int32 amount = 3;
+}
+
+message Service {
+  int32 id = 1;
+  string name = 2;
+}
