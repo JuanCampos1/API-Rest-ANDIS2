@@ -1,6 +1,6 @@
 const express = require('express');
 const servicesRoutes = require('./routes/servicesRoutes');
-const userRoutes = require('./routes/userRoutes');
+const userRoutes = require('./routes/usersRoutes');
 
 const app = express();
 
