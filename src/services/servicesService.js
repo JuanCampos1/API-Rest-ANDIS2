@@ -18,7 +18,7 @@ const getServices = (call, callback) => {
 };
 
 const getService = (call, callback) => {
-  const service = services.find(service => service.id === call.request.service_id);
+  const service = services.find(service => service.id === call.request.serviceId);
   if (service) {
     callback(null, service);
   } else {
@@ -30,7 +30,7 @@ const getService = (call, callback) => {
 };
 
 const payService = (call, callback) => {
-  const service = services.find(service => service.id === call.request.service_id);
+  const service = services.find(service => service.id === call.request.serviceId);
   if (service) {
     callback(null, { message: 'Pago realizado con éxito' });
   } else {
@@ -42,10 +42,10 @@ const payService = (call, callback) => {
 };
 
 const subscribeToAutomaticPayment = (call, callback) => {
-  const user = users.find(user => user.id === call.request.user_id);
+  const user = users.find(user => user.id === call.request.userId);
   if (user) {
-    if (!user.automatics.includes(call.request.service_id)) {
-      user.automatics.push(call.request.service_id);
+    if (!user.automatics.includes(call.request.serviceId)) {
+      user.automatics.push(call.request.serviceId);
     }
     callback(null, { message: 'Suscripción automática realizada con éxito' });
   } else {

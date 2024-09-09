@@ -12,7 +12,7 @@ const users = [
 ];
 
 const getAutomaticSubscriptions = (call, callback) => {
-  const user = users.find(user => user.id === call.request.user_id);
+  const user = users.find(user => user.id === call.request.userId);
   if (user) {
     callback(null, { automatics: user.automatics });
   } else {
@@ -24,7 +24,7 @@ const getAutomaticSubscriptions = (call, callback) => {
 };
 
 const getUserPaymentHistory = (call, callback) => {
-  const user = users.find(user => user.id === call.request.user_id);
+  const user = users.find(user => user.id === call.request.userId);
   if (user) {
     callback(null, { payments: user.payments });
   } else {
@@ -36,9 +36,9 @@ const getUserPaymentHistory = (call, callback) => {
 };
 
 const getPaymentReceipt = (call, callback) => {
-  const user = users.find(user => user.id === call.request.user_id);
+  const user = users.find(user => user.id === call.request.userId);
   if (user) {
-    const payment = user.payments.find(payment => payment.id === call.request.payment_id);
+    const payment = user.payments.find(payment => payment.id === call.request.paymentId);
     if (payment) {
       callback(null, payment);
     } else {
@@ -56,9 +56,9 @@ const getPaymentReceipt = (call, callback) => {
 };
 
 const unsubscribeAutomaticPayment = (call, callback) => {
-  const user = users.find(user => user.id === call.request.user_id);
+  const user = users.find(user => user.id === call.request.userId);
   if (user) {
-    const index = user.automatics.indexOf(call.request.aut_id);
+    const index = user.automatics.indexOf(call.request.autId);
     if (index > -1) {
       user.automatics.splice(index, 1);
       callback(null, { message: 'Suscripción cancelada con éxito', automatics: user.automatics });
