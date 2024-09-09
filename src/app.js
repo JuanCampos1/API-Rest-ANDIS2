@@ -1,26 +1,15 @@
 const express = require('express');
+const servicesRoutes = require('./routes/servicesRoutes');
+const userRoutes = require('./routes/userRoutes');
+
 const app = express();
 
 app.use(express.json());
 
-const userRoutes = require('./routes/usersRoutes.js');
-const serviceRoutes = require('./routes/servicesRoutes.js');
+app.use('/payment/user', userRoutes);
+app.use('/payment/services', servicesRoutes);
 
-app.use('/payments/users', userRoutes);  
-app.use('/payments/services', serviceRoutes); 
-
-
-app.get('/', (req, res) => {
-  res.send('Bienvenido a la API');
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
-
-app.use((req, res, next) => {
-  res.status(404).send('Ruta no encontrada');
-});
-
-const port = 3000;
-app.listen(port, () => {
-  console.log(`Servidor corriendo en http://localhost:${port}`);
-});
-
-module.exports = app;
