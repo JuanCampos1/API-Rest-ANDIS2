@@ -5,9 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "local": "node .\\src\\app.js",
-    "mac": "node src/app.js",
-    "graph": "node src/server.js"
+    "local-windows": "node .\\src\\app.js",
+    "local-mac": "node src/app.js",
+    "graph-windows": "node .\\src\\server.js",
+    "graph-mac": "node src/server.js"
+    
   },
   "keywords": [],
   "author": "",
