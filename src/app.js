@@ -6,6 +6,7 @@ const app = express();
 
 app.use(express.json());
 
+// Routes for users and services
 app.use('/payment/user', userRoutes);
 app.use('/payment/services', servicesRoutes);
 

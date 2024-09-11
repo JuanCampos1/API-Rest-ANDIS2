@@ -1,3 +1,15 @@
+const amqp = require('amqplib');
+
+async function sendToQueue(queue, message) {
+  const connection = await amqp.connect('amqp://localhost');
+  const channel = await connection.createChannel();
+  await channel.assertQueue(queue, { durable: true });
+  channel.sendToQueue(queue, Buffer.from(JSON.stringify(message)), { persistent: true });
+  console.log(`Message sent to ${queue}:`, message);
+  await channel.close();
+  await connection.close();
+}
+
 const services = [
   { id: 1, name: 'ANTEL', description: 'Pago de servicios de telefonía e internet' },
   { id: 2, name: 'UTE', description: 'Pago de facturas de energía eléctrica' },
@@ -9,18 +21,7 @@ const getAvailableServices = (req, res) => {
   res.json(services);
 };
 
-const getServiceById = (req, res) => {
-  const serviceId = parseInt(req.params.service_id, 10);
-  const service = services.find(service => service.id === serviceId);
-
-  if (service) {
-    res.json(service);
-  } else {
-    res.status(404).json({ message: 'Servicio no encontrado' });
-  }
-};
-
-const payService = (req, res) => {
+const payService = async (req, res) => {
   const serviceId = parseInt(req.params.service_id, 10);
   const service = services.find(service => service.id === serviceId);
 
@@ -34,8 +35,11 @@ const payService = (req, res) => {
       paymentDate: new Date().toISOString(),
     };
 
+    // Send the payment request to the "payment_queue"
+    await sendToQueue('payment_queue', paymentDetails);
+
     res.status(201).json({
-      message: 'Pago realizado exitosamente',
+      message: 'Pago en proceso, revisa más tarde para ver el estado.',
       paymentDetails,
     });
   } else {
@@ -43,27 +47,30 @@ const payService = (req, res) => {
   }
 };
 
-const subscribeToAutomaticPayment = (req, res) => {
+const subscribeToAutomaticPayment = async (req, res) => {
   const serviceId = parseInt(req.params.service_id, 10);
   const service = services.find(service => service.id === serviceId);
 
   if (service) {
     const { paymentMethod, frequency } = req.body;
-    const automaticPaymentDetails = {
+    const subscriptionDetails = {
       serviceId: service.id,
       serviceName: service.name,
       paymentMethod: paymentMethod || 'Tarjeta de crédito',
-      frequency: frequency || 'Mensual',  
+      frequency: frequency || 'Mensual',
       subscribedAt: new Date().toISOString(),
     };
 
+    // Send the subscription request to the "subscription_queue"
+    await sendToQueue('subscription_queue', subscriptionDetails);
+
     res.status(201).json({
-      message: 'Suscripción a pago automático realizada exitosamente',
-      automaticPaymentDetails,
+      message: 'Suscripción en proceso, revisa más tarde para ver el estado.',
+      subscriptionDetails,
     });
   } else {
     res.status(404).json({ message: 'Servicio no encontrado' });
   }
 };
 
-module.exports = { getAvailableServices, getServiceById, payService, subscribeToAutomaticPayment };
+module.exports = { getAvailableServices, payService, subscribeToAutomaticPayment };
