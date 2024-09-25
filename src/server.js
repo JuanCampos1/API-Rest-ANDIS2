@@ -87,6 +87,15 @@ var root = {
     // Find and return the service that matches the provided id
     return services.find((service) => service.id === id);
   },
+
+  payService({ serviceId }) {
+    const service = this.services().find((service) => service.id === serviceId);
+    if (service) {
+      return "Pago realizado exitosamente";
+    } else {
+      return "Servicio no encontrado";
+    }
+  },
 };
 
 var app = express();
